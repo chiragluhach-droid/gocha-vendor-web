@@ -1,70 +1,62 @@
-# Getting Started with Create React App
+# Vendor Dashboard Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A web-based dashboard for restaurant vendors to manage orders and menu items.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Authentication**: Secure login using restaurant ID and passkey
+- **Restaurant ID Lookup**: Built-in tool to find your restaurant ID
+- **Real-time Orders**: Live updates for incoming orders via WebSocket
+- **Order Management**: View, accept, and mark orders as ready/delivered
+- **Menu Management**: Add, edit, and toggle availability of menu items
+- **Responsive Design**: Works on desktop and mobile devices
 
-### `npm start`
+## Getting Your Restaurant ID
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Vendors need their Restaurant ID and passkey to log in. Here's how to get them:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Option 1: Use the Built-in Lookup Tool
+1. Go to the login page
+2. Click the "Find ID" button next to the Restaurant ID field
+3. Browse or search for your restaurant
+4. Click on your restaurant to automatically fill in the ID
 
-### `npm test`
+### Option 2: Contact System Administrator
+- Ask your system administrator to provide your Restaurant ID
+- The ID is a long alphanumeric string (MongoDB ObjectId)
+- Example: `6975a8a47372bd964f84af50`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Option 3: Check Database Directly
+If you have database access, restaurant IDs can be found in the `restaurants` collection.
 
-### `npm run build`
+## Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Start the development server:
+   ```bash
+   npm start
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Login**: Enter your restaurant ID and passkey
+2. **View Orders**: Switch between "Incoming" and "Completed" tabs
+3. **Manage Orders**: Click buttons to mark orders as ready or delivered
+4. **Manage Menu**: Click "Manage Menu" to add/edit menu items
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## API
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The app connects to the backend API at `https://gocha-backend.onrender.com`. Make sure the backend is running and accessible.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Technologies Used
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- React
+- React Router
+- Axios
+- Socket.IO Client

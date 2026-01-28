@@ -1,6 +1,30 @@
 .App {
-  text-align: center;
+  /* Removed 'text-align: center' so dashboard text aligns left correctly */
+  min-height: 100vh;
 }
+
+/* --- REQUIRED ANIMATIONS --- */
+
+/* Used by the Loading Spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Used by the Notification Toast */
+@keyframes slideIn {
+  from { 
+    transform: translateY(100%); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+/* --- Keep standard React Logo styles if you use them elsewhere, 
+   otherwise you can delete below this line --- */
 
 .App-logo {
   height: 40vmin;
@@ -29,10 +53,6 @@
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
