@@ -30,6 +30,10 @@ export const authAPI = {
 };
 
 export const restaurantAPI = {
+  getDetails: async (restaurantId) => {
+    const response = await api.get(`/api/restaurants/${restaurantId}`);
+    return response.data;
+  },
   getMenu: async (restaurantId, includeUnavailable = false) => {
     const response = await api.get(`/api/restaurants/${restaurantId}/menu${includeUnavailable ? '?includeUnavailable=true' : ''}`);
     return response.data;

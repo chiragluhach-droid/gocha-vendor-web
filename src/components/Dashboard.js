@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Swal from "sweetalert2";
-import { orderAPI } from '../api';
+import { orderAPI, restaurantAPI } from '../api';
 import io from 'socket.io-client';
 import MenuManager from './MenuManager';
 import OrderCard from './OrderCard';
@@ -20,6 +20,7 @@ const API_BASE_URL = 'https://gocha-backend.onrender.com';
 
 const Dashboard = () => {
   const [vendor, setVendor] = useState(null);
+  const [restaurant, setRestaurant] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('incoming');
@@ -58,6 +59,16 @@ const Dashboard = () => {
     }
   }, []);
 
+  const loadRestaurant = useCallback(async (restaurantId) => {
+    if (!restaurantId) return;
+    try {
+      const data = await restaurantAPI.getDetails(restaurantId);
+      setRestaurant(data.restaurant);
+    } catch (err) {
+      console.error('Failed to load restaurant', err);
+    }
+  }, []);
+
   const playNotificationSound = useCallback(() => {
     if (!userHasInteracted) return;
     const audio = new Audio('/beep.mp3');
@@ -67,7 +78,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (vendor?.restaurantId) {
       loadOrders(vendor.restaurantId);
-      
+      loadRestaurant(vendor.restaurantId);
+
       const socket = io(API_BASE_URL, {
         reconnection: true,
         reconnectionDelay: 1000
@@ -94,10 +106,10 @@ const Dashboard = () => {
         playNotificationSound();
         setTimeout(() => setNotification(null), 4000);
       });
-      
+
       return () => socket.disconnect();
     }
-  }, [vendor?.restaurantId, loadOrders, playNotificationSound]);
+  }, [vendor?.restaurantId, loadOrders, loadRestaurant, playNotificationSound]);
 
   const handleStatusUpdate = async (orderId, status) => {
     try {
@@ -190,13 +202,26 @@ const Dashboard = () => {
       <header style={styles.header} className="glass-header">
         <div style={styles.headerContent}>
           <div style={styles.brandSection}>
-            <div style={styles.logoPlaceholder}>{vendor?.name?.charAt(0) || 'V'}</div>
+            {restaurant?.image ? (
+              <img src={restaurant.image} alt={restaurant.name} style={styles.restaurantImage} />
+            ) : (
+              <div style={styles.logoPlaceholder}>{vendor?.name?.charAt(0) || 'V'}</div>
+            )}
             <div>
-              <h1 style={styles.shopName}>{vendor?.name || 'Dashboard'}</h1>
-              <span style={styles.shopStatus}>Open for orders</span>
+              <h1 style={styles.shopName}>{restaurant?.name || vendor?.name || 'Dashboard'}</h1>
+              <span style={styles.shopStatus}>
+                {restaurant?.isOpen ? 'Open for orders' : 'Closed'}
+                {restaurant?.waitTime > 0 && ` • ${restaurant.waitTime} min wait`}
+              </span>
+              {restaurant?.location && (
+                <span style={styles.shopLocation}>{restaurant.location}</span>
+              )}
+              {restaurant?.rating && (
+                <span style={styles.shopRating}>★ {restaurant.rating}</span>
+              )}
             </div>
           </div>
-          
+
           <div style={styles.headerActions}>
             <HeaderButton onClick={() => setShowMenuManager(true)} icon={<Icons.Menu />} label="Menu" />
             <HeaderButton onClick={handleLogout} icon={<Icons.LogOut />} label="Logout" danger />
@@ -360,7 +385,7 @@ const TabButton = ({ active, onClick, label, count, activeColor }) => (
 const styles = {
   container: {
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
+    background: 'linear-gradient(135deg, #f5f5f5 0%, #e5e7eb 100%)',
     fontFamily: '"Inter", system-ui, sans-serif',
     paddingBottom: '40px',
   },
