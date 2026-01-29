@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://gocha-backend.onrender.com';
+const API_BASE_URL = 'http://3.7.254.19';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
