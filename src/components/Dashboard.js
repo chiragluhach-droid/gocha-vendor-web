@@ -100,7 +100,7 @@ const Dashboard = () => {
         setOrders(prev => [newOrder, ...prev]);
         const suffix = newOrder._id ? String(newOrder._id).slice(-4) : '----';
         
-        // --- NOTIFICATION SET HERE ---
+        // --- Trigger Notification ---
         setNotification(`New Order #${suffix}`);
         playNotificationSound();
         setTimeout(() => setNotification(null), 4000);
@@ -160,7 +160,6 @@ const Dashboard = () => {
 
   return (
     <div style={styles.container}>
-      {/* Global CSS */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -172,7 +171,7 @@ const Dashboard = () => {
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
       `}</style>
 
-      {/* --- NOTIFICATION TOAST RESTORED --- */}
+      {/* --- Notification Toast --- */}
       {notification && (
         <div style={styles.toast} className="card-enter">
           <div style={styles.toastIcon}><Icons.Bell /></div>
@@ -183,12 +182,11 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Header */}
+      {/* --- Header --- */}
       <header style={styles.header}>
         <div style={styles.headerContent}>
           <div style={styles.brandSection}>
             <div style={styles.avatarWrapper}>
-              {/* LARGE RESTAURANT IMAGE */}
               {restaurant?.image ? (
                 <img src={restaurant.image} alt={restaurant.name} style={styles.restaurantImage} />
               ) : (
@@ -214,14 +212,14 @@ const Dashboard = () => {
       </header>
 
       <main style={styles.main}>
-        {/* Stats */}
+        {/* --- Stats Row (Compact) --- */}
         <div style={styles.statsRow}>
-          <StatCard label="Pending Orders" value={loading ? "..." : incomingOrders.length} icon={<Icons.Inbox />} theme="orange" />
-          <StatCard label="Ready to Serve" value={loading ? "..." : readyOrders.length} icon={<Icons.Chef />} theme="blue" />
-          <StatCard label="Completed Today" value={loading ? "..." : completedOrders.length} icon={<Icons.Trending />} theme="green" />
+          <StatCard label="Pending" value={loading ? "..." : incomingOrders.length} icon={<Icons.Inbox />} theme="orange" />
+          <StatCard label="Ready" value={loading ? "..." : readyOrders.length} icon={<Icons.Chef />} theme="blue" />
+          <StatCard label="Completed" value={loading ? "..." : completedOrders.length} icon={<Icons.Trending />} theme="green" />
         </div>
 
-        {/* Tabs */}
+        {/* --- Controls --- */}
         <div style={styles.controlsBar}>
           <div style={styles.tabContainer}>
             <TabButton active={activeTab === 'incoming'} onClick={() => setActiveTab('incoming')} label="Incoming" count={incomingOrders.length} />
@@ -230,7 +228,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Grid */}
+        {/* --- Grid --- */}
         <div style={styles.grid}>
           {loading ? (
              Array(3).fill(0).map((_, i) => <div key={i} style={styles.skeletonCard} className="skeleton"></div>)
@@ -252,7 +250,7 @@ const Dashboard = () => {
         </div>
       </main>
 
-      {/* Modals */}
+      {/* --- Modals --- */}
       {showMenuManager && (
         <MenuManager
           restaurantId={vendor.restaurantId}
@@ -265,6 +263,7 @@ const Dashboard = () => {
 };
 
 // --- Sub Components ---
+
 const HeaderButton = ({ onClick, icon, label, danger }) => (
   <button 
     onClick={onClick} 
@@ -278,12 +277,12 @@ const StatCard = ({ label, value, icon, theme }) => {
   const colors = { orange: '#F97316', blue: '#3B82F6', green: '#10B981' };
   const bgs = { orange: '#FFF7ED', blue: '#EFF6FF', green: '#ECFDF5' };
   return (
-    <div style={{...styles.statCard, borderBottom: `4px solid ${colors[theme]}`}}>
+    <div style={{...styles.statCard, borderBottom: `3px solid ${colors[theme]}`}}>
       <div>
         <span style={styles.statLabel}>{label}</span>
         <div style={styles.statValue}>{value}</div>
       </div>
-      <div style={{ padding: 10, borderRadius: 12, background: bgs[theme], color: colors[theme] }}>{icon}</div>
+      <div style={{ padding: 8, borderRadius: 10, background: bgs[theme], color: colors[theme] }}>{icon}</div>
     </div>
   );
 };
@@ -303,14 +302,7 @@ const styles = {
   
   // Large Image Styles
   avatarWrapper: { position: 'relative' },
-  restaurantImage: { 
-    width: '90px', 
-    height: '90px', 
-    borderRadius: '16px', 
-    objectFit: 'cover', 
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-    border: '3px solid white'
-  },
+  restaurantImage: { width: '90px', height: '90px', borderRadius: '16px', objectFit: 'cover', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '3px solid white' },
   logoPlaceholder: { width: '90px', height: '90px', background: '#111', color: 'white', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 700 },
   statusDot: { position: 'absolute', bottom: 2, right: 2, width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#10B981', border: '3px solid white' },
   
@@ -323,52 +315,26 @@ const styles = {
   headerBtn: { display: 'flex', alignItems: 'center', padding: '0.6rem 1.2rem', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', transition: '0.2s' },
   
   main: { maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' },
-  statsRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' },
-  statCard: { backgroundColor: '#fff', padding: '1.5rem', borderRadius: '16px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', display: 'flex', justifyContent: 'space-between' },
-  statLabel: { fontSize: '0.8rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' },
-  statValue: { fontSize: '2.2rem', fontWeight: 800, marginTop: '0.25rem', color: '#0F172A' },
+  
+  // Compact Stats Styles
+  statsRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' },
+  statCard: { backgroundColor: '#fff', padding: '1rem', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  statLabel: { fontSize: '0.75rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' },
+  statValue: { fontSize: '1.5rem', fontWeight: 800, marginTop: '0.1rem', color: '#0F172A', lineHeight: 1 },
   
   controlsBar: { display: 'flex', justifyContent: 'center', marginBottom: '2rem' },
   tabContainer: { display: 'inline-flex', backgroundColor: '#fff', padding: '6px', borderRadius: '14px', boxShadow: '0 2px 4px rgba(0,0,0,0.04)', border: '1px solid #E2E8F0', gap: '6px' },
   tab: { padding: '0.6rem 1.5rem', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' },
   tabCount: { padding: '2px 8px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 800 },
   
-  grid: { 
-    display: 'grid', 
-    gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', 
-    gap: '1.5rem', 
-    alignItems: 'stretch' 
-  },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1.5rem', alignItems: 'stretch' },
   skeletonCard: { height: '300px', borderRadius: '16px' },
   emptyState: { gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', background: 'white', borderRadius: '16px', border: '2px dashed #e2e8f0' },
   emptyIconWrapper: { width: '60px', height: '60px', background: '#f1f5f9', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' },
   emptyTitle: { margin: 0, color: '#64748B' },
 
-  // --- TOAST STYLES RESTORED ---
-  toast: {
-    position: 'fixed',
-    bottom: '30px',
-    right: '30px',
-    backgroundColor: '#1E1E1E',
-    color: 'white',
-    padding: '1rem 1.25rem',
-    borderRadius: '14px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-    zIndex: 100,
-    minWidth: '300px',
-  },
-  toastIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    width: '40px',
-    height: '40px',
-    borderRadius: '10px',
-  }
+  toast: { position: 'fixed', bottom: '30px', right: '30px', backgroundColor: '#1E1E1E', color: 'white', padding: '1rem 1.25rem', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', zIndex: 100, minWidth: '300px' },
+  toastIcon: { display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.1)', width: '40px', height: '40px', borderRadius: '10px' }
 };
 
 export default Dashboard;
