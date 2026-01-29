@@ -20,7 +20,6 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
   };
 
   // --- Internal Component: Tactile Button ---
-  // This handles the hover and press states internally to avoid re-rendering the whole card
   const ActionButton = ({ onClick, label, baseColor, hoverColor }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isPressed, setIsPressed] = useState(false);
@@ -35,10 +34,10 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
       fontSize: '0.9rem',
       fontWeight: '600',
       boxShadow: isPressed 
-        ? 'inset 0 2px 4px rgba(0,0,0,0.2)' // Inner shadow looks "pressed in"
-        : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Floating shadow
+        ? 'inset 0 2px 4px rgba(0,0,0,0.2)' 
+        : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
       transform: isPressed ? 'scale(0.96) translateY(1px)' : 'scale(1) translateY(0)',
-      transition: 'all 0.1s cubic-bezier(0.4, 0, 0.2, 1)', // Snappy transition
+      transition: 'all 0.1s cubic-bezier(0.4, 0, 0.2, 1)',
       outline: 'none',
       userSelect: 'none',
       display: 'flex',
@@ -58,7 +57,6 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
         style={style}
       >
         {label}
-        {/* Simple chevron icon */}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
@@ -69,9 +67,9 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
   // --- Styling Logic ---
   const getStatusStyles = (status) => {
     const styles = {
-      pending: { bg: '#fff7ed', text: '#ea580c', border: '#ffedd5' }, // Orange-600
-      ready:   { bg: '#ecfdf5', text: '#059669', border: '#a7f3d0' }, // Green-600
-      delivered: { bg: '#f3f4f6', text: '#4b5563', border: '#e5e7eb' }, // Gray-600
+      pending: { bg: '#fff7ed', text: '#ea580c', border: '#ffedd5' }, 
+      ready:   { bg: '#ecfdf5', text: '#059669', border: '#a7f3d0' },
+      delivered: { bg: '#f3f4f6', text: '#4b5563', border: '#e5e7eb' },
     };
     return styles[status] || styles.delivered;
   };
@@ -82,16 +80,20 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
   const cardStyle = {
     backgroundColor: 'white',
     border: `1px solid ${isCardHovered ? '#d1d5db' : '#e5e7eb'}`,
-    borderRadius: '16px', // Softer corners
-    marginBottom: '1.5rem',
+    borderRadius: '16px', 
+    marginBottom: '0', // Removed bottom margin as Grid handles gap
     boxShadow: isCardHovered 
       ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' 
       : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    transform: isCardHovered ? 'translateY(-2px)' : 'translateY(0)',
+    transform: isCardHovered ? 'translateY(-4px)' : 'translateY(0)',
     transition: 'all 0.3s ease',
     opacity: (activeTab === 'completed' && order.status === 'delivered') ? 0.8 : 1,
     overflow: 'hidden',
-    position: 'relative'
+    position: 'relative',
+    // *** NEW: Flex properties for equal height ***
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
   };
 
   // --- Icons ---
@@ -150,7 +152,6 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
           display: 'flex',
           alignItems: 'center',
           gap: '6px',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
         }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: statusStyle.text }}></span>
           {order.status}
@@ -158,7 +159,8 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
       </div>
 
       {/* --- Content Body --- */}
-      <div style={{ padding: '1.5rem' }}>
+      {/* *** NEW: flex: 1 pushes footer to bottom *** */}
+      <div style={{ padding: '1.5rem', flex: 1 }}> 
         
         {/* Customer Info Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.85rem', marginBottom: '1.5rem' }}>
@@ -234,8 +236,7 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        borderBottomLeftRadius: '16px',
-        borderBottomRightRadius: '16px'
+        marginTop: 'auto' // Ensures it stays at bottom if content is short
       }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#6b7280', fontWeight: '600', letterSpacing: '0.025em', marginBottom: '2px' }}>
@@ -257,7 +258,7 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
             </span>
           </div>
           
-          {/* Action Buttons using the new internal component */}
+          {/* Action Buttons */}
           {activeTab === 'incoming' && order.status === 'pending' && (
             <ActionButton 
               label="Mark Ready" 
