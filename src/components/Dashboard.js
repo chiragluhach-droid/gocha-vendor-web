@@ -360,229 +360,184 @@ const TabButton = ({ active, onClick, label, count, activeColor }) => (
 const styles = {
   container: {
     minHeight: '100vh',
-    backgroundColor: '#f9fafb', // Lighter gray for more air
-    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    backgroundColor: '#f5f5f5',
+    fontFamily: '"Inter", system-ui, sans-serif',
     paddingBottom: '40px',
   },
+
   loadingContainer: {
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     height: '100vh',
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#f5f5f5',
   },
+
   header: {
     position: 'sticky',
     top: 0,
     zIndex: 50,
+    background: '#ffffff',
+    borderBottom: '1px solid #e5e5e5'
   },
+
   headerContent: {
     maxWidth: '1280px',
     margin: '0 auto',
-    padding: '0.75rem 1.5rem',
+    padding: '1rem 1.5rem',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+
   brandSection: {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
   },
+
   logoPlaceholder: {
-    width: '42px',
-    height: '42px',
-    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    width: '40px',
+    height: '40px',
+    background: '#111',
     color: 'white',
-    borderRadius: '10px',
+    borderRadius: '8px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontWeight: '800',
-    fontSize: '1.25rem',
-    boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.2)',
+    fontWeight: 700,
   },
+
   shopName: {
-    fontSize: '1.1rem',
-    fontWeight: '700',
-    color: '#111827',
+    fontSize: '1rem',
+    fontWeight: 600,
+    color: '#111',
     margin: 0,
-    lineHeight: 1.2,
   },
+
   shopStatus: {
     fontSize: '0.75rem',
-    color: '#10b981',
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
+    color: '#666',
   },
+
   headerActions: {
     display: 'flex',
     gap: '0.75rem',
   },
+
   headerBtn: {
     display: 'flex',
     alignItems: 'center',
-    padding: '0.5rem 1rem',
-    border: '1px solid #e5e7eb',
-    borderRadius: '8px',
+    padding: '0.45rem 0.9rem',
+    border: '1px solid #ddd',
+    borderRadius: '6px',
     cursor: 'pointer',
-    fontWeight: '600',
-    fontSize: '0.9rem',
-    transition: 'all 0.2s',
+    fontWeight: 500,
+    fontSize: '0.85rem',
+    background: '#fff',
+    transition: '0.2s',
   },
+
   main: {
     maxWidth: '1280px',
     margin: '0 auto',
     padding: '2rem 1.5rem',
   },
+
   statsRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-    gap: '1.5rem',
-    marginBottom: '2.5rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: '1.25rem',
+    marginBottom: '2rem',
   },
+
   statCard: {
-    backgroundColor: 'white',
-    padding: '1.5rem',
-    borderRadius: '16px',
-    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-    border: '1px solid rgba(255,255,255,0.5)',
-    transition: 'transform 0.2s, box-shadow 0.2s',
+    backgroundColor: '#fff',
+    padding: '1.25rem',
+    borderRadius: '12px',
+    border: '1px solid #e5e5e5',
   },
+
   statLabel: {
-    fontSize: '0.85rem',
-    color: '#6b7280',
-    fontWeight: '600',
+    fontSize: '0.75rem',
+    color: '#777',
+    fontWeight: 600,
     textTransform: 'uppercase',
-    letterSpacing: '0.025em',
   },
+
   statValue: {
-    fontSize: '2rem',
-    fontWeight: '800',
-    marginTop: '0.5rem',
-    lineHeight: 1,
+    fontSize: '1.8rem',
+    fontWeight: 700,
+    marginTop: '0.4rem',
+    color: '#111',
   },
+
   tabContainer: {
     display: 'flex',
-    borderBottom: '1px solid #e5e7eb',
+    borderBottom: '1px solid #ddd',
     marginBottom: '2rem',
     gap: '2rem',
   },
+
   tab: {
-    padding: '1rem 0.5rem',
+    padding: '0.8rem 0',
     background: 'none',
     border: 'none',
     cursor: 'pointer',
-    fontSize: '1rem',
-    fontWeight: '600',
+    fontSize: '0.9rem',
+    fontWeight: 600,
     display: 'flex',
     alignItems: 'center',
-    gap: '0.6rem',
-    transition: 'all 0.2s',
+    gap: '0.5rem',
   },
+
   badge: {
-    padding: '0.2rem 0.6rem',
-    borderRadius: '99px',
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    transition: 'background-color 0.2s',
+    padding: '0.15rem 0.5rem',
+    borderRadius: '999px',
+    fontSize: '0.7rem',
+    background: '#eee',
+    color: '#444',
   },
+
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
-    gap: '1.5rem',
+    gap: '1.25rem',
   },
+
   emptyState: {
     textAlign: 'center',
-    padding: '5rem 2rem',
-    backgroundColor: 'white',
-    borderRadius: '16px',
-    border: '2px dashed #e5e7eb',
+    padding: '4rem 2rem',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    border: '1px dashed #ddd',
     gridColumn: '1 / -1',
   },
+
   emptyIcon: {
-    fontSize: '2rem',
+    color: '#aaa',
     marginBottom: '1rem',
-    color: '#d1d5db',
-    background: '#f9fafb',
-    width: '64px',
-    height: '64px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 1.5rem auto'
   },
+
   toast: {
     position: 'fixed',
-    bottom: '30px',
-    right: '30px',
-    backgroundColor: '#1f2937',
+    bottom: '24px',
+    right: '24px',
+    backgroundColor: '#111',
     color: 'white',
-    padding: '1rem 1.25rem',
-    borderRadius: '12px',
+    padding: '0.9rem 1.1rem',
+    borderRadius: '10px',
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem',
-    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2)',
-    zIndex: 100,
-    maxWidth: '350px',
-    border: '1px solid rgba(255,255,255,0.1)'
+    gap: '0.75rem',
+    boxShadow: '0 10px 30px rgba(0,0,0,.25)',
   },
+
   toastIcon: {
-    backgroundColor: '#374151',
-    width: '36px',
-    height: '36px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#60a5fa'
-  },
-  modalOverlay: {
-    position: 'fixed',
-    inset: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    backdropFilter: 'blur(4px)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 100,
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: '20px',
-    width: '95%',
-    maxWidth: '900px',
-    maxHeight: '85vh',
-    overflowY: 'auto',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  },
-  modalHeader: {
-    padding: '1.5rem 2rem',
-    borderBottom: '1px solid #f3f4f6',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem'
-  },
-  closeButton: {
-    background: '#f3f4f6',
-    border: 'none',
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    fontSize: '1.2rem',
-    cursor: 'pointer',
-    color: '#6b7280',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'background 0.2s',
+    opacity: 0.7
   }
 };
+
+
 
 export default Dashboard;
