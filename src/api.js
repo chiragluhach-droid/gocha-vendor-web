@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://ware-mental-progressive-sensors.trycloudflare.com';
+const API_BASE_URL = 'https://gocha-backend.onrender.com';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
