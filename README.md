@@ -24,7 +24,9 @@ Vendors need their Restaurant ID and passkey to log in. Here's how to get them:
 ### Option 2: Contact System Administrator
 - Ask your system administrator to provide your Restaurant ID
 - The ID is a long alphanumeric string (MongoDB ObjectId)
-- Example: `6975a8a47372bd964f84af50`
+- For Demo:-
+Restaurant ID - `692338e7935520cbe6bfedea`
+Passworrd - `bunkyard123`
 
 ### Option 3: Check Database Directly
 If you have database access, restaurant IDs can be found in the `restaurants` collection.
