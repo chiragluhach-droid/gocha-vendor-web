@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { authAPI } from '../api';
 
 const Login = ({ onLogin }) => {
-  const [restaurantId, setRestaurantId] = useState('692338e7935520cbe6bfedea');
-  const [passkey, setPasskey] = useState('bunkyard123');
+  const [restaurantId, setRestaurantId] = useState('');
+  const [passkey, setPasskey] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -65,6 +65,25 @@ const Login = ({ onLogin }) => {
             Welcome Back
           </h2>
           <p style={{ color: '#6b7280', fontSize: '0.95rem' }}>Please enter your vendor details</p>
+        </div>
+
+        {/* Demo credentials for testers */}
+        <div style={{
+          backgroundColor: '#f8fafc',
+          border: '1px dashed #c7d2fe',
+          padding: '0.75rem 1rem',
+          borderRadius: '8px',
+          marginBottom: '1.25rem',
+          color: '#374151',
+          fontSize: '0.8rem'
+        }}>
+          <strong style={{ display: 'block', marginBottom: '0.35rem', color: '#111827' }}>Demo credentials</strong>
+          <div style={{ wordBreak: 'break-all' }}>
+            Restaurant ID:<span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, monospace', color: '#0f172a' }}>'692338e7935520cbe6bfedea'</span>
+          </div>
+          <div>
+            Password: <span style={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, monospace', color: '#0f172a' }}>'bunkyard123'</span>
+          </div>
         </div>
 
         <form onSubmit={handleLogin}>
