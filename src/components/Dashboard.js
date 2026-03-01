@@ -110,11 +110,21 @@ const Dashboard = () => {
 
   const handleStatusUpdate = async (orderId, status) => {
     try {
-      if (status === "ready") new Audio("/click.mp3").play().catch(() => {});
-      else new Audio("/success.mp3").play().catch(() => {});
+      // Play different sounds for feedback
+      if (status === 'ready') new Audio('/click.mp3').play().catch(() => {});
+      else if (status === 'preparing') new Audio('/click.mp3').play().catch(() => {});
+      else if (status === 'cancelled') new Audio('/error.mp3').play().catch(() => {});
+      else new Audio('/success.mp3').play().catch(() => {});
 
       await orderAPI.updateStatus(orderId, status);
       setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status } : o));
+
+      const titleMap = {
+        preparing: 'Order Accepted — Preparing',
+        ready: 'Order marked Ready!',
+        delivered: 'Order Completed!',
+        cancelled: 'Order Cancelled'
+      };
 
       Swal.mixin({
         toast: true,
@@ -123,8 +133,8 @@ const Dashboard = () => {
         timer: 2000,
         timerProgressBar: true
       }).fire({
-        icon: 'success',
-        title: status === "ready" ? "Order marked Ready!" : "Order Completed!"
+        icon: status === 'cancelled' ? 'error' : 'success',
+        title: titleMap[status] || 'Status updated'
       });
       
     } catch (err) {
@@ -153,8 +163,10 @@ const Dashboard = () => {
   const incomingOrders = useMemo(() => orders.filter(o => o.status === 'pending'), [orders]);
   const readyOrders = useMemo(() => orders.filter(o => o.status === 'ready'), [orders]);
   const completedOrders = useMemo(() => orders.filter(o => o.status === 'delivered'), [orders]);
+  const cancelledOrders = useMemo(() => orders.filter(o => o.status === 'cancelled'), [orders]);
+  const preparingOrders = useMemo(() => orders.filter(o => o.status === 'preparing'), [orders]);
   
-  const currentList = activeTab === 'incoming' ? incomingOrders : activeTab === 'ready' ? readyOrders : completedOrders;
+  const currentList = activeTab === 'incoming' ? [...preparingOrders, ...incomingOrders] : activeTab === 'ready' ? readyOrders : activeTab === 'cancelled' ? cancelledOrders : completedOrders;
 
   return (
     <div style={styles.container}>
@@ -213,14 +225,17 @@ const Dashboard = () => {
         {/* --- Stats Row (Compact) --- */}
         <div style={styles.statsRow}>
           <StatCard label="Pending" value={loading ? "..." : incomingOrders.length} icon={<Icons.Inbox />} theme="orange" />
-          <StatCard label="Ready" value={loading ? "..." : readyOrders.length} icon={<Icons.Chef />} theme="blue" />
-          <StatCard label="Completed" value={loading ? "..." : completedOrders.length} icon={<Icons.Trending />} theme="green" />
+            <StatCard label="Preparing" value={loading ? "..." : preparingOrders.length} icon={<Icons.Chef />} theme="orange" />
+            <StatCard label="Ready" value={loading ? "..." : readyOrders.length} icon={<Icons.Chef />} theme="blue" />
+            <StatCard label="Cancelled" value={loading ? "..." : cancelledOrders.length} icon={<Icons.Inbox />} theme="red" />
+            <StatCard label="Completed" value={loading ? "..." : completedOrders.length} icon={<Icons.Trending />} theme="green" />
         </div>
 
         {/* --- Controls --- */}
         <div style={styles.controlsBar}>
           <div style={styles.tabContainer}>
             <TabButton active={activeTab === 'incoming'} onClick={() => setActiveTab('incoming')} label="Incoming" count={incomingOrders.length} />
+            <TabButton active={activeTab === 'cancelled'} onClick={() => setActiveTab('cancelled')} label="Cancelled" count={cancelledOrders.length} />
             <TabButton active={activeTab === 'ready'} onClick={() => setActiveTab('ready')} label="Ready" count={readyOrders.length} />
             <TabButton active={activeTab === 'completed'} onClick={() => setActiveTab('completed')} label="History" count={completedOrders.length} />
           </div>
@@ -272,8 +287,8 @@ const HeaderButton = ({ onClick, icon, label, danger }) => (
 );
 
 const StatCard = ({ label, value, icon, theme }) => {
-  const colors = { orange: '#F97316', blue: '#3B82F6', green: '#10B981' };
-  const bgs = { orange: '#FFF7ED', blue: '#EFF6FF', green: '#ECFDF5' };
+  const colors = { orange: '#F97316', blue: '#3B82F6', green: '#10B981', red: '#EF4444' };
+  const bgs = { orange: '#FFF7ED', blue: '#EFF6FF', green: '#ECFDF5', red: '#fff1f2' };
   return (
     <div style={{...styles.statCard, borderBottom: `3px solid ${colors[theme]}`}}>
       <div>

@@ -67,9 +67,11 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
   // --- Styling Logic ---
   const getStatusStyles = (status) => {
     const styles = {
-      pending: { bg: '#fff7ed', text: '#ea580c', border: '#ffedd5' }, 
+      pending: { bg: '#fff7ed', text: '#ea580c', border: '#ffedd5' },
+      preparing: { bg: '#fff7ed', text: '#ea580c', border: '#ffedd5' },
       ready:   { bg: '#ecfdf5', text: '#059669', border: '#a7f3d0' },
       delivered: { bg: '#f3f4f6', text: '#4b5563', border: '#e5e7eb' },
+      cancelled: { bg: '#fff1f2', text: '#991B1B', border: '#fee2e2' }
     };
     return styles[status] || styles.delivered;
   };
@@ -209,11 +211,18 @@ const OrderCard = ({ order, onStatusUpdate, activeTab }) => {
             <span style={{ fontSize: '1.2rem', fontWeight: '800', color: '#111827', lineHeight: 1, letterSpacing: '-0.025em' }}>{formatCurrency(order.total)}</span>
           </div>
           
-          {activeTab === 'incoming' && order.status === 'pending' && (
-            <ActionButton label="Ready" baseColor="#10b981" hoverColor="#059669" onClick={() => onStatusUpdate(order._id, 'ready')} />
+          {/* Vendor actions depending on status - keep colors distinct */}
+          {order.status === 'pending' && (
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <ActionButton label="Decline" baseColor="#ef4444" hoverColor="#dc2626" onClick={() => onStatusUpdate(order._id, 'cancelled')} />
+              <ActionButton label="Accept" baseColor="#10b981" hoverColor="#059669" onClick={() => onStatusUpdate(order._id, 'preparing')} />
+            </div>
           )}
-          {activeTab === 'ready' && order.status === 'ready' && (
-            <ActionButton label="Done" baseColor="#3b82f6" hoverColor="#2563eb" onClick={() => onStatusUpdate(order._id, 'delivered')} />
+          {order.status === 'preparing' && (
+            <ActionButton label="Mark as Ready" baseColor="#f59e0b" hoverColor="#d97706" onClick={() => onStatusUpdate(order._id, 'ready')} />
+          )}
+          {order.status === 'ready' && (
+            <ActionButton label="Mark as Delivered" baseColor="#047857" hoverColor="#065f46" onClick={() => onStatusUpdate(order._id, 'delivered')} />
           )}
         </div>
       </div>
