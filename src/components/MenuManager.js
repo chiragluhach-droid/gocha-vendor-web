@@ -1,15 +1,30 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { restaurantAPI } from '../api';
 
+// --- Unified Brand Colors ---
+const COLORS = {
+  primary: '#056548',
+  primaryHover: '#04533a',
+  primaryLight: 'rgba(5, 101, 72, 0.1)',
+  surface: '#FFFFFF',
+  background: '#F9FAFB',
+  textPrimary: '#1F2937',
+  textSecondary: '#6B7280',
+  border: '#E5E7EB',
+  danger: '#DC2626',
+  dangerLight: '#FEF2F2',
+  success: '#059669',
+  successLight: '#ECFDF5',
+};
+
 // --- Modern Icons ---
 const Icons = {
-  Close: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
-  Plus: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
-  Image: () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
-  Veg: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" stroke="#16A34A" strokeWidth="2"/><circle cx="12" cy="12" r="6" fill="#16A34A"/></svg>,
-  NonVeg: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" stroke="#DC2626" strokeWidth="2"/><path d="M12 6L6 18H18L12 6Z" fill="#DC2626"/></svg>,
-  Trash: () => <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>,
-  Search: () => <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+  Close: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
+  Plus: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+  Image: () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
+  Veg: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" stroke="#16A34A" strokeWidth="2"/><circle cx="12" cy="12" r="6" fill="#16A34A"/></svg>,
+  NonVeg: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="22" height="22" stroke="#DC2626" strokeWidth="2"/><path d="M12 6L6 18H18L12 6Z" fill="#DC2626"/></svg>,
+  Search: () => <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 };
 
 const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
@@ -99,14 +114,35 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
 
   return (
     <div style={styles.overlay}>
+      {/* --- Injected CSS for Hover/Focus/Keyframes --- */}
       <style>{`
         @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        
         .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-        .hover-scale:hover { transform: scale(1.02); }
         .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+        
+        /* Interactive States */
+        .btn-icon:hover { background-color: #F3F4F6; color: #111827; }
+        .btn-primary { background-color: ${COLORS.primary}; color: white; transition: background 0.2s; }
+        .btn-primary:hover { background-color: ${COLORS.primaryHover}; }
+        
+        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+        
+        .add-new-card { transition: all 0.2s; border-color: ${COLORS.border}; color: ${COLORS.textSecondary}; }
+        .add-new-card:hover { border-color: ${COLORS.primary}; color: ${COLORS.primary}; background-color: ${COLORS.primaryLight}; }
+        .add-new-card:hover .icon-circle { background-color: white; color: ${COLORS.primary}; }
+        
+        /* Form Inputs */
+        .form-input { transition: all 0.2s; background-color: ${COLORS.background}; }
+        .form-input:focus { border-color: ${COLORS.primary}; box-shadow: 0 0 0 3px ${COLORS.primaryLight}; outline: none; background-color: white; }
+        
+        /* Toggle Switch */
+        .switch-input:checked + .slider { background-color: ${COLORS.primary}; }
+        .switch-input:checked + .slider:before { transform: translateX(20px); }
       `}</style>
 
       {/* --- Main Modal Content --- */}
@@ -116,7 +152,7 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
             <h2 style={styles.title}>Menu Management</h2>
             <p style={styles.subtitle}>Manage your dishes, pricing, and availability</p>
           </div>
-          <button onClick={onClose} style={styles.iconBtn}><Icons.Close /></button>
+          <button onClick={onClose} style={styles.iconBtn} className="btn-icon"><Icons.Close /></button>
         </div>
 
         {/* Toolbar */}
@@ -126,11 +162,12 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
             <input 
               placeholder="Search items..." 
               style={styles.searchInput} 
+              className="form-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button onClick={() => setShowAddForm(true)} style={styles.primaryBtn}>
+          <button onClick={() => setShowAddForm(true)} style={styles.primaryBtn} className="btn-primary">
             <Icons.Plus /> <span>Add Item</span>
           </button>
         </div>
@@ -141,18 +178,18 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
             {loading ? (
                Array(6).fill(0).map((_, i) => (
                  <div key={i} style={styles.skeletonCard}>
-                   <div style={{height: 140}} className="skeleton"></div>
+                   <div style={{height: 160}} className="skeleton"></div>
                    <div style={{padding: 16}}>
-                     <div style={{height: 20, width: '70%', marginBottom: 10}} className="skeleton"></div>
-                     <div style={{height: 16, width: '40%'}} className="skeleton"></div>
+                     <div style={{height: 18, width: '60%', marginBottom: 10, borderRadius: 4}} className="skeleton"></div>
+                     <div style={{height: 14, width: '40%', borderRadius: 4}} className="skeleton"></div>
                    </div>
                  </div>
                ))
             ) : (
               <>
-                <div style={styles.addNewCard} onClick={() => setShowAddForm(true)} className="hover-scale">
-                  <div style={styles.addIconCircle}><Icons.Plus /></div>
-                  <span style={{fontWeight: 600}}>Add New Dish</span>
+                <div style={styles.addNewCard} onClick={() => setShowAddForm(true)} className="add-new-card">
+                  <div style={styles.addIconCircle} className="icon-circle"><Icons.Plus /></div>
+                  <span style={{fontWeight: 600, fontSize: '0.95rem'}}>Add New Dish</span>
                 </div>
 
                 {filteredItems.map(item => (
@@ -174,15 +211,19 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
           <div style={styles.backdrop} onClick={() => setShowAddForm(false)}></div>
           <div style={styles.drawer}>
             <div style={styles.drawerHeader}>
-              <h3>Add New Item</h3>
-              <button onClick={() => setShowAddForm(false)} style={styles.iconBtn}><Icons.Close /></button>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', color: COLORS.textPrimary }}>Add New Item</h3>
+              <button onClick={() => setShowAddForm(false)} style={styles.iconBtn} className="btn-icon"><Icons.Close /></button>
             </div>
             
             <form onSubmit={handleAddItem} style={styles.formContent} className="custom-scroll">
               <div style={styles.formSection}>
                 <label style={styles.label}>Dish Image</label>
                 <div 
-                  style={{...styles.imageUploadBox, borderColor: isDragOver ? '#3b82f6' : '#e5e7eb', backgroundColor: isDragOver ? '#eff6ff' : '#f9fafb'}}
+                  style={{
+                    ...styles.imageUploadBox, 
+                    borderColor: isDragOver ? COLORS.primary : COLORS.border, 
+                    backgroundColor: isDragOver ? COLORS.primaryLight : COLORS.background
+                  }}
                   onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
                   onDragLeave={() => setIsDragOver(false)}
                   onDrop={(e) => { e.preventDefault(); setIsDragOver(false); if(e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); }}
@@ -196,7 +237,7 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
                   ) : (
                     <label htmlFor="img-upload" style={styles.uploadPlaceholder}>
                       <div style={styles.uploadIconWrapper}><Icons.Image /></div>
-                      <span style={{color: '#374151', fontWeight: 500}}>Click or drag image</span>
+                      <span style={{color: COLORS.textSecondary, fontWeight: 500, fontSize: '0.9rem'}}>Click or drag image here</span>
                     </label>
                   )}
                 </div>
@@ -204,17 +245,17 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
 
               <div style={styles.formSection}>
                 <label style={styles.label}>Item Name</label>
-                <input required style={styles.input} placeholder="e.g. Butter Chicken" value={newItem.name} onChange={e=>setNewItem({...newItem, name:e.target.value})} />
+                <input required className="form-input" style={styles.input} placeholder="e.g. Butter Chicken" value={newItem.name} onChange={e=>setNewItem({...newItem, name:e.target.value})} />
               </div>
 
               <div style={styles.row}>
                 <div style={{flex: 1}}>
                   <label style={styles.label}>Price (₹)</label>
-                  <input required type="number" style={styles.input} placeholder="0.00" value={newItem.price} onChange={e=>setNewItem({...newItem, price:e.target.value})} />
+                  <input required type="number" className="form-input" style={styles.input} placeholder="0.00" value={newItem.price} onChange={e=>setNewItem({...newItem, price:e.target.value})} />
                 </div>
                 <div style={{flex: 1}}>
                   <label style={styles.label}>Category</label>
-                  <select style={styles.select} value={newItem.category} onChange={e=>setNewItem({...newItem, category:e.target.value})}>
+                  <select className="form-input" style={styles.select} value={newItem.category} onChange={e=>setNewItem({...newItem, category:e.target.value})}>
                     <option>Starters</option>
                     <option>Main Course</option>
                     <option>Breads</option>
@@ -226,23 +267,21 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
 
               <div style={styles.formSection}>
                 <label style={styles.label}>Description</label>
-                <textarea style={{...styles.input, minHeight: 100, resize: 'vertical'}} placeholder="Describe ingredients..." value={newItem.description} onChange={e=>setNewItem({...newItem, description:e.target.value})} />
+                <textarea className="form-input" style={{...styles.input, minHeight: 100, resize: 'vertical'}} placeholder="Describe ingredients..." value={newItem.description} onChange={e=>setNewItem({...newItem, description:e.target.value})} />
               </div>
 
               <div style={styles.toggleRow}>
-                <div style={styles.toggleLabel}>
-                  <span style={{fontWeight: 600}}>Vegetarian</span>
-                </div>
+                <span style={{fontWeight: 600, color: COLORS.textPrimary, fontSize: '0.9rem'}}>Vegetarian Dish</span>
                 <label style={styles.switch}>
-                  <input type="checkbox" checked={newItem.isVeg} onChange={e=>setNewItem({...newItem, isVeg:e.target.checked})} />
-                  <span style={styles.slider}></span>
+                  <input type="checkbox" className="switch-input" style={{ opacity: 0, width: 0, height: 0 }} checked={newItem.isVeg} onChange={e=>setNewItem({...newItem, isVeg:e.target.checked})} />
+                  <span style={styles.slider} className="slider"></span>
                 </label>
               </div>
             </form>
 
             <div style={styles.drawerFooter}>
               <button type="button" onClick={() => setShowAddForm(false)} style={styles.cancelBtn}>Cancel</button>
-              <button type="submit" onClick={handleAddItem} style={styles.saveBtn}>Save Item</button>
+              <button type="submit" onClick={handleAddItem} style={styles.saveBtn} className="btn-primary">Save Item</button>
             </div>
           </div>
         </>
@@ -251,19 +290,16 @@ const MenuManager = ({ restaurantId, onClose, onMenuChanged }) => {
   );
 };
 
-// --- Sub-Component: Menu Card (Updated for B&W Effect) ---
+// --- Sub-Component: Menu Card ---
 const MenuCard = ({ item, onToggle }) => {
   const isAvailable = item.available;
 
   return (
-    <div style={styles.card}>
-      {/* We apply the B&W filter to the Image Wrapper and the Description Body 
-        The footer (button) remains unaffected so it stands out 
-      */}
+    <div style={styles.card} className="card-hover">
       <div style={{
         ...styles.cardContentWrapper,
         filter: isAvailable ? 'none' : 'grayscale(100%)',
-        opacity: isAvailable ? 1 : 0.6
+        opacity: isAvailable ? 1 : 0.65
       }}>
         <div style={styles.cardImageWrapper}>
           {item.image ? (
@@ -279,7 +315,7 @@ const MenuCard = ({ item, onToggle }) => {
         </div>
         
         <div style={styles.cardBody}>
-          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: 6}}>
             <h3 style={styles.cardTitle}>{item.name}</h3>
             <span style={styles.cardPrice}>₹{item.price}</span>
           </div>
@@ -287,7 +323,6 @@ const MenuCard = ({ item, onToggle }) => {
         </div>
       </div>
 
-      {/* Footer remains outside of the grayscale wrapper */}
       <div style={styles.cardFooter}>
         <span style={styles.categoryTag}>{item.category}</span>
         
@@ -298,20 +333,14 @@ const MenuCard = ({ item, onToggle }) => {
           }}
           style={{
             ...styles.statusToggle,
-            // Logic Flipped:
-            // If Available -> Warn to Mark Sold Out (Red)
-            // If Sold Out -> Encourage to Mark In Stock (Green)
-            backgroundColor: isAvailable ? '#FEF2F2' : '#ECFDF5', // Red-50 vs Green-50
-            color: isAvailable ? '#DC2626' : '#059669', // Red-600 vs Green-600
-            border: `1px solid ${isAvailable ? '#FECACA' : '#A7F3D0'}`
+            backgroundColor: isAvailable ? COLORS.dangerLight : COLORS.successLight,
+            color: isAvailable ? COLORS.danger : COLORS.success,
           }}
         >
-          {/* Visual indicator dot */}
           <span style={{
-            width: 8, height: 8, borderRadius: '50%', 
-            backgroundColor: isAvailable ? '#DC2626' : '#059669'
+            width: 6, height: 6, borderRadius: '50%', 
+            backgroundColor: isAvailable ? COLORS.danger : COLORS.success
           }}></span>
-          
           {isAvailable ? 'Mark Sold Out' : 'Mark In Stock'}
         </button>
       </div>
@@ -323,120 +352,120 @@ const MenuCard = ({ item, onToggle }) => {
 const styles = {
   overlay: {
     position: 'fixed', inset: 0, zIndex: 9999,
-    backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)',
+    backgroundColor: 'rgba(17, 24, 39, 0.4)', backdropFilter: 'blur(4px)',
     display: 'flex', justifyContent: 'center', alignItems: 'center',
     animation: 'fadeIn 0.2s ease-out'
   },
   modal: {
-    width: '90%', maxWidth: '1200px', height: '85vh',
-    backgroundColor: '#F9FAFB', borderRadius: '24px',
-    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+    width: '92%', maxWidth: '1100px', height: '85vh',
+    backgroundColor: COLORS.surface, borderRadius: '16px',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
     display: 'flex', flexDirection: 'column', overflow: 'hidden',
-    border: '1px solid #ffffff'
   },
   header: {
-    padding: '1.5rem 2rem', backgroundColor: 'white',
-    borderBottom: '1px solid #f3f4f6', display: 'flex', 
+    padding: '1.25rem 2rem', backgroundColor: COLORS.surface,
+    borderBottom: `1px solid ${COLORS.border}`, display: 'flex', 
     justifyContent: 'space-between', alignItems: 'center'
   },
-  title: { fontSize: '1.5rem', fontWeight: '800', color: '#111827', margin: 0, letterSpacing: '-0.025em' },
-  subtitle: { fontSize: '0.9rem', color: '#6b7280', margin: '4px 0 0' },
+  title: { fontSize: '1.25rem', fontWeight: '700', color: COLORS.textPrimary, margin: 0 },
+  subtitle: { fontSize: '0.875rem', color: COLORS.textSecondary, margin: '4px 0 0' },
   iconBtn: {
     background: 'transparent', border: 'none', cursor: 'pointer',
-    color: '#6b7280', padding: 8, borderRadius: '50%', transition: 'all 0.2s',
-    ':hover': { backgroundColor: '#f3f4f6', color: '#111' }
+    color: COLORS.textSecondary, padding: 8, borderRadius: '8px', 
+    display: 'flex', alignItems: 'center', justifyContent: 'center'
   },
   toolbar: {
     padding: '1rem 2rem', display: 'flex', gap: '1rem',
     alignItems: 'center', justifyContent: 'space-between',
-    backgroundColor: 'white', borderBottom: '1px solid #f3f4f6'
+    backgroundColor: COLORS.surface, borderBottom: `1px solid ${COLORS.border}`
   },
   searchBox: {
     display: 'flex', alignItems: 'center', gap: 10,
-    backgroundColor: '#f3f4f6', padding: '0.6rem 1rem', borderRadius: '12px',
-    flex: 1, maxWidth: '400px', color: '#6b7280'
+    backgroundColor: COLORS.background, padding: '0.5rem 1rem', borderRadius: '8px',
+    flex: 1, maxWidth: '350px', color: COLORS.textSecondary, border: `1px solid ${COLORS.border}`
   },
-  searchInput: { border: 'none', background: 'transparent', outline: 'none', width: '100%', fontSize: '0.95rem' },
+  searchInput: { 
+    border: 'none', background: 'transparent', outline: 'none', 
+    width: '100%', fontSize: '0.9rem', color: COLORS.textPrimary 
+  },
   primaryBtn: {
-    backgroundColor: '#111827', color: 'white', border: 'none',
-    padding: '0.7rem 1.2rem', borderRadius: '10px', fontWeight: 600,
+    border: 'none', padding: '0.6rem 1rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem',
     display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer',
-    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)'
   },
-  content: { flex: 1, overflowY: 'auto', padding: '2rem' },
+  content: { flex: 1, overflowY: 'auto', padding: '1.5rem 2rem', backgroundColor: COLORS.background },
   grid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
     gap: '1.5rem'
   },
   addNewCard: {
-    border: '2px dashed #e5e7eb', borderRadius: '16px', backgroundColor: 'white',
+    border: '2px dashed', borderRadius: '12px', backgroundColor: COLORS.surface,
     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', minHeight: '340px', color: '#6b7280', transition: 'all 0.2s',
-    ':hover': { borderColor: '#111', color: '#111' }
+    cursor: 'pointer', minHeight: '300px',
   },
   addIconCircle: {
-    width: 56, height: 56, borderRadius: '50%', backgroundColor: '#f3f4f6',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
-    color: '#374151'
+    width: 48, height: 48, borderRadius: '50%', backgroundColor: COLORS.background,
+    display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12,
   },
   
   // Card Styles
   card: {
-    backgroundColor: 'white', borderRadius: '16px', overflow: 'hidden',
-    border: '1px solid #f3f4f6', display: 'flex', flexDirection: 'column',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.05)', transition: 'all 0.2s',
-    minHeight: '340px', justifyContent: 'space-between'
+    backgroundColor: COLORS.surface, borderRadius: '12px', overflow: 'hidden',
+    border: `1px solid ${COLORS.border}`, display: 'flex', flexDirection: 'column',
+    minHeight: '300px', justifyContent: 'space-between'
   },
   cardContentWrapper: { transition: 'all 0.3s ease' },
-  cardImageWrapper: { height: 180, position: 'relative', backgroundColor: '#f9fafb' },
+  cardImageWrapper: { height: 160, position: 'relative', backgroundColor: COLORS.background },
   cardImage: { width: '100%', height: '100%', objectFit: 'cover' },
-  cardPlaceholder: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem', color: '#d1d5db', fontWeight: 800 },
-  badges: { position: 'absolute', top: 10, right: 10, display: 'flex', gap: 6 },
-  vegBadge: { backgroundColor: 'white', borderRadius: 6, padding: 4, display: 'flex', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
-  cardBody: { padding: '1.25rem' },
-  cardTitle: { fontSize: '1rem', fontWeight: 700, color: '#111827', margin: 0, lineHeight: 1.3 },
-  cardPrice: { fontSize: '1rem', fontWeight: 700, color: '#059669' },
-  cardDesc: { fontSize: '0.85rem', color: '#6b7280', margin: '8px 0 0', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
+  cardPlaceholder: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', color: '#D1D5DB', fontWeight: 700 },
+  badges: { position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6 },
+  vegBadge: { backgroundColor: COLORS.surface, borderRadius: 6, padding: 6, display: 'flex', boxShadow: '0 1px 2px rgba(0,0,0,0.1)' },
+  cardBody: { padding: '1rem' },
+  cardTitle: { fontSize: '1rem', fontWeight: 600, color: COLORS.textPrimary, margin: 0, lineHeight: 1.3 },
+  cardPrice: { fontSize: '0.95rem', fontWeight: 700, color: COLORS.primary },
+  cardDesc: { fontSize: '0.85rem', color: COLORS.textSecondary, margin: '6px 0 0', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' },
   
   cardFooter: { 
     marginTop: 'auto', display: 'flex', justifyContent: 'space-between', 
-    alignItems: 'center', padding: '1rem 1.25rem', borderTop: '1px solid #f9fafb',
-    backgroundColor: 'white' // Ensures footer stays white even if body is grayscale
+    alignItems: 'center', padding: '0.75rem 1rem', borderTop: `1px solid ${COLORS.border}`,
+    backgroundColor: COLORS.surface
   },
-  categoryTag: { fontSize: '0.75rem', fontWeight: 600, color: '#6b7280', backgroundColor: '#f3f4f6', padding: '4px 8px', borderRadius: 6 },
+  categoryTag: { fontSize: '0.75rem', fontWeight: 600, color: COLORS.textSecondary, backgroundColor: COLORS.background, padding: '4px 8px', borderRadius: 4 },
   statusToggle: {
-    padding: '8px 14px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 700,
-    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8,
-    transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '0.02em'
+    padding: '6px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600,
+    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, border: 'none',
+    transition: 'all 0.2s',
   },
   
-  skeletonCard: { backgroundColor: 'white', borderRadius: '16px', overflow: 'hidden', minHeight: '320px', border: '1px solid #f3f4f6' },
-  backdrop: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.2)', zIndex: 10000 },
+  skeletonCard: { backgroundColor: COLORS.surface, borderRadius: '12px', overflow: 'hidden', minHeight: '300px', border: `1px solid ${COLORS.border}` },
+  backdrop: { position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 10000 },
   drawer: {
-    position: 'fixed', top: 0, right: 0, bottom: 0, width: '100%', maxWidth: '500px',
-    backgroundColor: 'white', boxShadow: '-10px 0 25px rgba(0,0,0,0.1)',
+    position: 'fixed', top: 0, right: 0, bottom: 0, width: '100%', maxWidth: '450px',
+    backgroundColor: COLORS.surface, boxShadow: '-4px 0 15px rgba(0,0,0,0.05)',
     zIndex: 10001, display: 'flex', flexDirection: 'column',
     animation: 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
   },
-  drawerHeader: { padding: '1.5rem', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  formContent: { flex: 1, overflowY: 'auto', padding: '2rem' },
-  drawerFooter: { padding: '1.5rem', borderTop: '1px solid #e5e7eb', display: 'flex', gap: '1rem', backgroundColor: '#f9fafb' },
-  formSection: { marginBottom: '1.5rem' },
-  label: { display: 'block', fontSize: '0.875rem', fontWeight: 600, color: '#374151', marginBottom: 8 },
-  input: { width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #d1d5db', fontSize: '0.95rem', outline: 'none' },
-  select: { width: '100%', padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid #d1d5db', fontSize: '0.95rem', backgroundColor: 'white' },
-  row: { display: 'flex', gap: '1rem', marginBottom: '1.5rem' },
-  imageUploadBox: { height: 200, border: '2px dashed', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' },
+  drawerHeader: { padding: '1.25rem 1.5rem', borderBottom: `1px solid ${COLORS.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  formContent: { flex: 1, overflowY: 'auto', padding: '1.5rem' },
+  drawerFooter: { padding: '1.25rem 1.5rem', borderTop: `1px solid ${COLORS.border}`, display: 'flex', gap: '1rem', backgroundColor: COLORS.background },
+  formSection: { marginBottom: '1.25rem' },
+  label: { display: 'block', fontSize: '0.85rem', fontWeight: 600, color: COLORS.textPrimary, marginBottom: 6 },
+  input: { width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: `1px solid ${COLORS.border}`, fontSize: '0.9rem', color: COLORS.textPrimary },
+  select: { width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: `1px solid ${COLORS.border}`, fontSize: '0.9rem', color: COLORS.textPrimary, appearance: 'none' },
+  row: { display: 'flex', gap: '1rem', marginBottom: '1.25rem' },
+  
+  imageUploadBox: { height: 160, border: '2px dashed', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', transition: 'all 0.2s' },
   uploadPlaceholder: { cursor: 'pointer', textAlign: 'center', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
-  uploadIconWrapper: { width: 48, height: 48, borderRadius: '50%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4b5563', marginBottom: 12 },
+  uploadIconWrapper: { width: 40, height: 40, borderRadius: '50%', backgroundColor: COLORS.surface, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.textSecondary, marginBottom: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' },
   previewContainer: { width: '100%', height: '100%', position: 'relative' },
   previewImg: { width: '100%', height: '100%', objectFit: 'cover' },
-  changeOverlay: { position: 'absolute', bottom: 10, right: 10, backgroundColor: 'rgba(0,0,0,0.75)', color: 'white', padding: '6px 12px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', backdropFilter: 'blur(4px)' },
-  toggleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', backgroundColor: '#f9fafb', borderRadius: '12px', border: '1px solid #f3f4f6' },
-  switch: { position: 'relative', display: 'inline-block', width: 44, height: 24 },
-  slider: { position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#e5e7eb', borderRadius: 34, transition: '.4s', ':before': { position: 'absolute', content: '""', height: 20, width: 20, left: 2, bottom: 2, backgroundColor: 'white', borderRadius: '50%', transition: '.4s' } },
-  cancelBtn: { flex: 1, padding: '0.8rem', borderRadius: '10px', border: '1px solid #d1d5db', backgroundColor: 'white', color: '#374151', fontWeight: 600, cursor: 'pointer' },
-  saveBtn: { flex: 1, padding: '0.8rem', borderRadius: '10px', border: 'none', backgroundColor: '#111827', color: 'white', fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }
+  changeOverlay: { position: 'absolute', bottom: 8, right: 8, backgroundColor: 'rgba(31, 41, 55, 0.8)', color: 'white', padding: '6px 10px', borderRadius: 6, fontSize: '0.75rem', fontWeight: 500, cursor: 'pointer', backdropFilter: 'blur(4px)' },
+  
+  toggleRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', backgroundColor: COLORS.surface, borderRadius: '8px', border: `1px solid ${COLORS.border}` },
+  switch: { position: 'relative', display: 'inline-block', width: 40, height: 22 },
+  slider: { position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: '#D1D5DB', borderRadius: 22, transition: '0.3s', ':before': { position: 'absolute', content: '""', height: 18, width: 18, left: 2, bottom: 2, backgroundColor: 'white', borderRadius: '50%', transition: '0.3s' } },
+  
+  cancelBtn: { flex: 1, padding: '0.75rem', borderRadius: '8px', border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.surface, color: COLORS.textPrimary, fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' },
+  saveBtn: { flex: 1, padding: '0.75rem', borderRadius: '8px', border: 'none', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }
 };
 
 export default MenuManager;
