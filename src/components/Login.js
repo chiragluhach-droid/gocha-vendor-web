@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { authAPI } from '../api';
 
 const Login = ({ onLogin }) => {
-  const [restaurantId, setRestaurantId] = useState('');
-  const [passkey, setPasskey] = useState('');
+  const [restaurantId, setRestaurantId] = useState('69dbb73cf01a247deae8c231');
+  const [passkey, setPasskey] = useState('chirag123');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
