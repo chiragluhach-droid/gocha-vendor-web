@@ -88,8 +88,8 @@ const Login = ({ onLogin }) => {
           color: '#065f46'
         }}>
           <strong>Demo Credentials</strong>
-          <div>ID: 692338e7935520cbe6bfedea</div>
-          <div>Password: bunkyard123</div>
+          <div>ID: 69dbb73cf01a247deae8c231</div>
+          <div>Password: chirag123</div>
         </div>
 
         <form onSubmit={handleLogin}>
