@@ -9,7 +9,13 @@ import {
   Search, 
   CheckCircle2,
   Menu,
-  X
+  X,
+  Heart,
+  Star,
+  MapPin,
+  Home,
+  ShoppingBag,
+  ShoppingCart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -128,53 +134,157 @@ const Hero = () => {
           >
             <div className="relative w-[280px] h-[580px] bg-gray-900 rounded-[40px] border-[8px] border-gray-900 shadow-2xl overflow-hidden z-10">
               {/* Mock App UI */}
-              <div className="absolute inset-0 bg-gray-50">
-                {/* Status Bar */}
-                <div className="h-6 flex items-center justify-between px-4 mt-2">
-                  <span className="text-xs font-medium">9:41</span>
-                  <div className="flex gap-1">
-                    <div className="w-4 h-3 bg-gray-800 rounded-sm"></div>
-                  </div>
-                </div>
-                {/* Header */}
-                <div className="p-4 bg-white shadow-sm flex items-center justify-between mt-2 rounded-b-2xl">
-                  <div>
-                    <p className="text-xs text-gray-500">Deliver to</p>
-                    <p className="font-bold text-sm">Library Block A ▾</p>
-                  </div>
-                  <div className="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center text-brand-600">
-                    <Search size={16} />
-                  </div>
-                </div>
-                {/* Content */}
-                <div className="p-4">
-                  <div className="bg-brand-600 text-white p-4 rounded-2xl mb-4 relative overflow-hidden">
-                    <div className="relative z-10">
-                      <h3 className="font-bold text-lg">50% OFF</h3>
-                      <p className="text-sm opacity-90">On your first order</p>
-                    </div>
-                    <div className="absolute right-[-20px] bottom-[-20px] opacity-20 overflow-hidden rounded-xl">
-                      <img src="/logo.png" alt="" className="w-24 h-24 object-cover grayscale invert" />
+              <div className="absolute inset-0 bg-[#F9FAFB] flex flex-col">
+                {/* Header Section */}
+                <div className="bg-[#056548] px-4 pt-8 pb-10 relative">
+                  {/* Status Bar Mock */}
+                  <div className="absolute top-2 left-0 right-0 flex justify-between px-5">
+                    <span className="text-[10px] text-white font-medium">9:41</span>
+                    <div className="flex gap-1 items-center">
+                      <div className="w-3 h-2 bg-white rounded-[2px] opacity-90"></div>
+                      <div className="w-2 h-2 bg-white rounded-full opacity-90"></div>
                     </div>
                   </div>
                   
-                  <h4 className="font-bold mb-3">Popular Outlets</h4>
-                  <div className="flex gap-3 overflow-hidden">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="min-w-[120px] bg-white p-3 rounded-xl shadow-sm border border-gray-100">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg mb-2"></div>
-                        <p className="font-semibold text-xs">Nescafe {i}</p>
-                        <p className="text-[10px] text-gray-500">Beverages</p>
-                      </div>
-                    ))}
+                  {/* Greeting Row */}
+                  <div className="flex justify-between items-center mt-4">
+                    <div>
+                      <p className="text-[8px] text-white/70 font-bold tracking-wider mb-0.5">GOOD AFTERNOON</p>
+                      <p className="text-white text-lg font-extrabold tracking-tight font-italic">Chirag 👋</p>
+                    </div>
+                    <div className="w-8 h-8 rounded-full border border-white/30 bg-white/20 flex items-center justify-center">
+                      <span className="text-white text-xs font-medium">C</span>
+                    </div>
                   </div>
                 </div>
+
+                {/* Body Section */}
+                <div className="flex-1 relative px-4">
+                  {/* Search Bar (Overlapping) */}
+                  <div className="absolute -top-5 left-4 right-4 h-10 bg-white rounded-xl shadow-md flex items-center px-3 border border-transparent z-20">
+                    <Search size={14} className="text-gray-400 mr-2" />
+                    <span className="text-xs text-gray-400 font-medium">Search restaurants...</span>
+                  </div>
+
+                  {/* Scroll Content */}
+                  <div className="pt-8 pb-4 h-full overflow-hidden flex flex-col gap-3">
+                    
+                    {/* Wishlist Banner */}
+                    <div className="bg-[#FFF8F1] border border-[#FFEDD5] rounded-2xl p-3 flex justify-between items-center shadow-sm relative overflow-hidden">
+                      <div className="flex items-center gap-3 relative z-10 w-[70%]">
+                        <div className="w-8 h-8 rounded-lg bg-[#FEE2E2] flex items-center justify-center shrink-0">
+                          <Heart size={14} className="text-[#EF4444]" fill="#EF4444" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-extrabold text-gray-900 mb-0.5">Your Favorites</p>
+                          <p className="text-[8px] leading-[10px] text-gray-500 pr-2">Tap ❤️ on dishes you love to save them!</p>
+                        </div>
+                      </div>
+                      <div className="w-12 h-10 bg-orange-200 rounded-lg overflow-hidden relative z-10 shrink-0">
+                         <img src="/logo.png" alt="" className="w-full h-full object-cover opacity-80 mix-blend-multiply" />
+                         <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#056548] rounded-full flex items-center justify-center border border-[#FFF8F1]">
+                           <span className="text-white text-[8px] font-bold">→</span>
+                         </div>
+                      </div>
+                    </div>
+
+                    {/* Section Header */}
+                    <div className="flex justify-between items-end mt-1 mb-0.5">
+                      <h3 className="text-sm font-extrabold text-gray-900">Nearby Outlets</h3>
+                      <span className="text-[9px] text-gray-500 font-bold">3 places</span>
+                    </div>
+
+                    {/* Restaurant Card 1 */}
+                    <div className="bg-white p-2.5 rounded-2xl shadow-sm border border-gray-100 flex gap-3">
+                      <div className="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0">
+                         <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?q=80&w=200" alt="Nescafe" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 py-0.5 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start">
+                            <h4 className="text-xs font-bold text-gray-900 truncate pr-1">Nescafe</h4>
+                            <div className="flex items-center bg-amber-50 px-1 py-0.5 rounded text-[8px] font-bold text-amber-700">
+                              <Star size={8} fill="currentColor" className="mr-0.5" /> 4.8
+                            </div>
+                          </div>
+                          <p className="text-[9px] text-gray-500 mt-0.5 flex items-center">
+                            <MapPin size={8} className="mr-0.5" /> Library Block A
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center mt-1">
+                          <div className="flex items-center bg-emerald-50 px-1.5 py-0.5 rounded-md">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></div>
+                            <span className="text-[8px] font-bold text-emerald-600 uppercase">5-10 min</span>
+                          </div>
+                          <div className="w-5 h-5 bg-emerald-50 rounded-full flex items-center justify-center">
+                            <span className="text-emerald-600 text-[10px] font-bold">›</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Restaurant Card 2 */}
+                    <div className="bg-white p-2.5 rounded-2xl shadow-sm border border-gray-100 flex gap-3">
+                      <div className="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0 relative">
+                         <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=200" alt="CHAIGARAM" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 py-0.5 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start">
+                            <h4 className="text-xs font-bold text-gray-900 truncate pr-1">CHAIGARAM</h4>
+                            <div className="flex items-center bg-amber-50 px-1 py-0.5 rounded text-[8px] font-bold text-amber-700">
+                              <Star size={8} fill="currentColor" className="mr-0.5" /> 4.5
+                            </div>
+                          </div>
+                          <p className="text-[9px] text-gray-500 mt-0.5 flex items-center">
+                            <MapPin size={8} className="mr-0.5" /> Main Gate
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center mt-1">
+                          <div className="flex items-center bg-emerald-50 px-1.5 py-0.5 rounded-md">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></div>
+                            <span className="text-[8px] font-bold text-emerald-600 uppercase">10 min</span>
+                          </div>
+                          <div className="w-5 h-5 bg-emerald-50 rounded-full flex items-center justify-center">
+                            <span className="text-emerald-600 text-[10px] font-bold">›</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
                 {/* Bottom Nav */}
-                <div className="absolute bottom-0 w-full bg-white border-t border-gray-100 p-4 flex justify-between items-center rounded-t-2xl px-6">
-                  <div className="text-brand-600"><Store size={20} /></div>
-                  <div className="text-gray-400"><Search size={20} /></div>
-                  <div className="text-gray-400 opacity-50"><img src="/logo.png" alt="" className="w-5 h-5 grayscale" /></div>
-                  <div className="text-gray-400"><CreditCard size={20} /></div>
+                <div className="absolute bottom-4 left-4 right-4 z-50">
+                  {/* Floating Action Button (Center) */}
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#056548] rounded-full flex items-center justify-center shadow-lg border-[3px] border-white z-20">
+                    <ShoppingBag size={20} className="text-white" />
+                  </div>
+                  
+                  {/* Glassmorphic Pill */}
+                  <div className="bg-white/90 backdrop-blur-md rounded-[24px] h-[52px] flex items-center justify-between px-3 shadow-[0_8px_20px_rgba(0,0,0,0.08)] border border-gray-100">
+                    <div className="flex flex-col items-center justify-center w-9 h-full relative">
+                      <Home size={18} className="text-[#056548]" fill="#056548" />
+                      <div className="w-1 h-1 bg-[#056548] rounded-full absolute bottom-1"></div>
+                    </div>
+                    <div className="flex flex-col items-center justify-center w-9 h-full">
+                      <Search size={18} className="text-gray-400" />
+                    </div>
+                    
+                    {/* Spacer for FAB */}
+                    <div className="w-12 h-full"></div>
+                    
+                    <div className="flex flex-col items-center justify-center w-9 h-full relative">
+                      <ShoppingCart size={18} className="text-gray-400" />
+                      <div className="absolute top-2 right-0 bg-red-500 w-[14px] h-[14px] rounded-full flex items-center justify-center border border-white">
+                        <span className="text-[6px] font-bold text-white leading-none">2</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center justify-center w-9 h-full">
+                      <Heart size={18} className="text-gray-400" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
