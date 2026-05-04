@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Swal from "sweetalert2";
 import { orderAPI, restaurantAPI } from '../api';
 import io from 'socket.io-client';
@@ -10,8 +11,8 @@ const Icons = {
   Menu: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>,
   LogOut: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>,
   Bell: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>,
-  Clock: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  Check: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+  Clock: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  Check: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
   Trending: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
   Inbox: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
   Chef: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/></svg>
@@ -28,6 +29,8 @@ const Dashboard = () => {
   const [showMenuManager, setShowMenuManager] = useState(false);
   const [notification, setNotification] = useState(null);
   const [userHasInteracted, setUserHasInteracted] = useState(false);
+
+  const TABS = ['incoming', 'cancelled', 'ready', 'completed'];
 
   // --- Effects ---
   useEffect(() => {
@@ -148,7 +151,7 @@ const Dashboard = () => {
       text: "You will be returned to the login screen.",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#111827',
+      confirmButtonColor: '#059669', // Brand color
       cancelButtonColor: '#9CA3AF',
       confirmButtonText: 'Yes, sign out'
     }).then((result) => {
@@ -168,72 +171,115 @@ const Dashboard = () => {
   
   const currentList = activeTab === 'incoming' ? [...preparingOrders, ...incomingOrders] : activeTab === 'ready' ? readyOrders : activeTab === 'cancelled' ? cancelledOrders : completedOrders;
 
+  const handleSwipe = (direction) => {
+    const currentIndex = TABS.indexOf(activeTab);
+    if (direction === 'left' && currentIndex < TABS.length - 1) {
+      setActiveTab(TABS[currentIndex + 1]);
+    } else if (direction === 'right' && currentIndex > 0) {
+      setActiveTab(TABS[currentIndex - 1]);
+    }
+  };
+
   return (
-    <div style={styles.container}>
+    <div className="min-h-screen bg-gray-50 pb-10 font-sans">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .card-enter { animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
-        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
       {/* --- Notification Toast --- */}
       {notification && (
-        <div style={styles.toast} className="card-enter">
-          <div style={styles.toastIcon}><Icons.Bell /></div>
+        <div className="fixed bottom-6 right-6 bg-gray-900 text-white p-4 rounded-xl flex items-center gap-4 shadow-2xl z-50 min-w-[300px] card-enter">
+          <div className="flex items-center justify-center bg-white/10 w-10 h-10 rounded-lg text-brand-400">
+            <Icons.Bell />
+          </div>
           <div>
-            <div style={{ fontWeight: '600', fontSize: '0.9rem' }}>New Activity</div>
-            <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>{notification}</div>
+            <div className="font-semibold text-sm">New Activity</div>
+            <div className="text-sm opacity-80">{notification}</div>
           </div>
         </div>
       )}
 
-      {/* --- Header --- */}
-      <header style={styles.header}>
-        <div style={styles.headerContent}>
-          <div style={styles.brandSection}>
-            <div style={styles.avatarWrapper}>
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 py-2 md:py-3 shadow-sm">
+        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between gap-4">
+          {/* Brand & Restaurant Info */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="relative shrink-0">
               {restaurant?.image ? (
-                <img src={restaurant.image} alt={restaurant.name} style={styles.restaurantImage} />
+                <img src={restaurant.image} alt={restaurant.name} className="w-10 h-10 md:w-16 md:h-16 rounded-xl object-cover shadow-sm border-2 border-white" />
               ) : (
-                <div style={styles.logoPlaceholder}>{vendor?.name?.charAt(0) || 'V'}</div>
+                <div className="w-10 h-10 md:w-16 md:h-16 bg-brand-600 text-white rounded-xl flex items-center justify-center text-lg md:text-2xl font-bold shadow-sm border-2 border-white">
+                  {vendor?.name?.charAt(0) || 'V'}
+                </div>
               )}
-              <div style={styles.statusDot} title={restaurant?.isOpen ? "Open" : "Closed"}></div>
+              <div 
+                className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-white shadow-sm ${restaurant?.isOpen ? 'bg-emerald-500' : 'bg-red-500'}`} 
+                title={restaurant?.isOpen ? "Open" : "Closed"}
+              ></div>
             </div>
             
-            <div style={styles.headerText}>
-              <h1 style={styles.shopName}>{restaurant?.name || vendor?.name || 'Dashboard'}</h1>
-              <div style={styles.metaRow}>
-                {restaurant?.rating && <span style={styles.badge}>★ {restaurant.rating}</span>}
-                <span style={styles.metaText}>{restaurant?.location || 'Store Location'}</span>
+            <div className="flex flex-col min-w-0">
+              <h1 className="text-base md:text-xl font-bold text-gray-900 m-0 tracking-tight truncate leading-tight">
+                {restaurant?.name || vendor?.name || 'Dashboard'}
+              </h1>
+              <div className="flex items-center gap-2 mt-0.5">
+                {restaurant?.rating && (
+                  <span className="text-[10px] md:text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100 px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+                    ★ {restaurant.rating}
+                  </span>
+                )}
+                <span className="text-[10px] md:text-sm text-gray-500 font-medium truncate opacity-80">
+                  {restaurant?.location || 'Store Location'}
+                </span>
               </div>
             </div>
           </div>
 
-          <div style={styles.headerActions}>
-            <HeaderButton onClick={() => setShowMenuManager(true)} icon={<Icons.Menu />} label="Menu" />
-            <HeaderButton onClick={handleLogout} icon={<Icons.LogOut />} label="Logout" danger />
+          {/* Actions */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button 
+              onClick={() => setShowMenuManager(true)}
+              className="p-2 md:px-4 md:py-2.5 bg-gray-50 text-gray-700 rounded-xl border border-gray-200 hover:bg-gray-100 transition-all flex items-center gap-2 font-semibold text-sm active:scale-95"
+              title="Menu"
+            >
+              <Icons.Menu />
+              <span className="hidden md:inline">Menu</span>
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="p-2 md:px-4 md:py-2.5 bg-red-50 text-red-600 rounded-xl border border-red-100 hover:bg-red-100 transition-all flex items-center gap-2 font-semibold text-sm active:scale-95"
+              title="Logout"
+            >
+              <Icons.LogOut />
+              <span className="hidden md:inline">Logout</span>
+            </button>
           </div>
         </div>
       </header>
 
-      <main style={styles.main}>
-        {/* --- Stats Row (Compact) --- */}
-        <div style={styles.statsRow}>
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-8">
+        {/* --- Stats Row --- */}
+        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-6 md:mb-8">
           <StatCard label="Pending" value={loading ? "..." : incomingOrders.length} icon={<Icons.Inbox />} theme="orange" />
-            <StatCard label="Preparing" value={loading ? "..." : preparingOrders.length} icon={<Icons.Chef />} theme="orange" />
-            <StatCard label="Ready" value={loading ? "..." : readyOrders.length} icon={<Icons.Chef />} theme="blue" />
-            <StatCard label="Cancelled" value={loading ? "..." : cancelledOrders.length} icon={<Icons.Inbox />} theme="red" />
-            <StatCard label="Completed" value={loading ? "..." : completedOrders.length} icon={<Icons.Trending />} theme="green" />
+          <StatCard label="Preparing" value={loading ? "..." : preparingOrders.length} icon={<Icons.Chef />} theme="orange" />
+          <StatCard label="Ready" value={loading ? "..." : readyOrders.length} icon={<Icons.Check />} theme="blue" />
+          <StatCard label="Cancelled" value={loading ? "..." : cancelledOrders.length} icon={<Icons.Inbox />} theme="red" />
+          <StatCard label="Completed" value={loading ? "..." : completedOrders.length} icon={<Icons.Trending />} theme="green" />
+        </div>
+
+
+
+        {/* MR-BITES Label */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="h-[1px] w-8 bg-brand-200 mb-2"></div>
+          <span className="text-[11px] font-black text-brand-600 uppercase tracking-[0.4em] opacity-60">MR-BITES</span>
         </div>
 
         {/* --- Controls --- */}
-        <div style={styles.controlsBar}>
-          <div style={styles.tabContainer}>
+        <div className="flex justify-start md:justify-center overflow-x-auto pb-4 mb-4 md:mb-8 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
+          <div className="inline-flex bg-white p-1.5 rounded-2xl shadow-sm border border-gray-200 gap-1.5 min-w-max">
             <TabButton active={activeTab === 'incoming'} onClick={() => setActiveTab('incoming')} label="Incoming" count={incomingOrders.length} />
             <TabButton active={activeTab === 'cancelled'} onClick={() => setActiveTab('cancelled')} label="Cancelled" count={cancelledOrders.length} />
             <TabButton active={activeTab === 'ready'} onClick={() => setActiveTab('ready')} label="Ready" count={readyOrders.length} />
@@ -242,25 +288,47 @@ const Dashboard = () => {
         </div>
 
         {/* --- Grid --- */}
-        <div style={styles.grid}>
-          {loading ? (
-             Array(3).fill(0).map((_, i) => <div key={i} style={styles.skeletonCard} className="skeleton"></div>)
-          ) : (
-            <>
-              {currentList.map((order, index) => (
-                <div key={order._id} className="card-enter" style={{ animationDelay: `${index * 50}ms` }}>
-                  <OrderCard order={order} onStatusUpdate={handleStatusUpdate} activeTab={activeTab} />
-                </div>
-              ))}
-              {!loading && currentList.length === 0 && (
-                <div style={styles.emptyState} className="card-enter">
-                  <div style={styles.emptyIconWrapper}>{activeTab === 'incoming' ? <Icons.Clock /> : <Icons.Check />}</div>
-                  <h3 style={styles.emptyTitle}>No {activeTab} orders</h3>
-                </div>
-              )}
-            </>
-          )}
-        </div>
+        <motion.div 
+          className="w-full overflow-hidden"
+          key={activeTab}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragEnd={(e, { offset, velocity }) => {
+            const swipe = offset.x;
+            if (swipe < -50) handleSwipe('left');
+            else if (swipe > 50) handleSwipe('right');
+          }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6 items-stretch">
+            {loading ? (
+               Array(3).fill(0).map((_, i) => (
+                 <div key={i} className="h-64 bg-gray-200 animate-pulse rounded-2xl"></div>
+               ))
+            ) : (
+              <>
+                {currentList.map((order, index) => (
+                  <div key={order._id} className="card-enter" style={{ animationDelay: `${index * 50}ms` }}>
+                    <OrderCard order={order} onStatusUpdate={handleStatusUpdate} activeTab={activeTab} />
+                  </div>
+                ))}
+                {!loading && currentList.length === 0 && (
+                  <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white rounded-2xl border-2 border-dashed border-gray-200 text-center card-enter">
+                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 mb-4">
+                      {activeTab === 'incoming' ? <Icons.Clock /> : <Icons.Check />}
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-700 m-0">No {activeTab} orders</h3>
+                    <p className="text-gray-500 text-sm mt-1">Check back later for new updates.</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </motion.div>
       </main>
 
       {/* --- Modals --- */}
@@ -280,73 +348,49 @@ const Dashboard = () => {
 const HeaderButton = ({ onClick, icon, label, danger }) => (
   <button 
     onClick={onClick} 
-    style={{...styles.headerBtn, color: danger ? '#EF4444' : '#374151', border: danger ? '1px solid #fee2e2' : '1px solid #e5e7eb', background: 'white'}}
+    className={`flex items-center gap-2 px-3 py-2 md:px-4 md:py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm border focus:outline-none focus:ring-2 focus:ring-offset-1 active:scale-95
+      ${danger 
+        ? 'text-red-600 border-red-200 bg-white hover:bg-red-50 focus:ring-red-200' 
+        : 'text-gray-700 border-gray-200 bg-white hover:bg-gray-50 focus:ring-gray-200'}`}
   >
-    {icon} <span style={{ marginLeft: 8 }}>{label}</span>
+    {icon} <span>{label}</span>
   </button>
 );
 
 const StatCard = ({ label, value, icon, theme }) => {
-  const colors = { orange: '#F97316', blue: '#3B82F6', green: '#10B981', red: '#EF4444' };
-  const bgs = { orange: '#FFF7ED', blue: '#EFF6FF', green: '#ECFDF5', red: '#fff1f2' };
+  const themeStyles = {
+    orange: 'border-b-amber-500 text-amber-600 bg-amber-50',
+    blue: 'border-b-blue-500 text-blue-600 bg-blue-50',
+    green: 'border-b-brand-500 text-brand-600 bg-brand-50',
+    red: 'border-b-red-500 text-red-600 bg-red-50'
+  };
+
   return (
-    <div style={{...styles.statCard, borderBottom: `3px solid ${colors[theme]}`}}>
+    <div className={`bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center border-b-4 ${themeStyles[theme].split(' ')[0]}`}>
       <div>
-        <span style={styles.statLabel}>{label}</span>
-        <div style={styles.statValue}>{value}</div>
+        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{label}</span>
+        <div className="text-2xl font-bold text-gray-900 mt-0.5">{value}</div>
       </div>
-      <div style={{ padding: 8, borderRadius: 10, background: bgs[theme], color: colors[theme] }}>{icon}</div>
+      <div className={`p-2.5 rounded-xl ${themeStyles[theme].split(' ')[2]} ${themeStyles[theme].split(' ')[1]}`}>
+        {icon}
+      </div>
     </div>
   );
 };
 
 const TabButton = ({ active, onClick, label, count }) => (
-  <button onClick={onClick} style={{...styles.tab, background: active ? '#111827' : 'transparent', color: active ? '#fff' : '#6B7280'}}>
-    {label} <span style={{...styles.tabCount, background: active ? 'rgba(255,255,255,0.2)' : '#E5E7EB', color: active ? '#fff' : '#374151'}}>{count}</span>
+  <button 
+    onClick={onClick} 
+    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500/50
+      ${active 
+        ? 'bg-brand-600 text-white shadow-md' 
+        : 'bg-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+  >
+    {label} 
+    <span className={`px-2 py-0.5 rounded-full text-xs font-black ${active ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'}`}>
+      {count}
+    </span>
   </button>
 );
-
-// --- Styles ---
-const styles = {
-  container: { minHeight: '100vh', backgroundColor: '#F8FAFC', paddingBottom: '40px' },
-  header: { position: 'sticky', top: 0, zIndex: 50, background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #e2e8f0', padding: '12px 0' },
-  headerContent: { maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  brandSection: { display: 'flex', alignItems: 'center', gap: '20px' },
-  
-  avatarWrapper: { position: 'relative' },
-  restaurantImage: { width: '90px', height: '90px', borderRadius: '16px', objectFit: 'cover', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', border: '3px solid white' },
-  logoPlaceholder: { width: '90px', height: '90px', background: '#111', color: 'white', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 700 },
-  statusDot: { position: 'absolute', bottom: 2, right: 2, width: '16px', height: '16px', borderRadius: '50%', backgroundColor: '#10B981', border: '3px solid white' },
-  
-  headerText: { display: 'flex', flexDirection: 'column', justifyContent: 'center' },
-  shopName: { fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', margin: 0, letterSpacing: '-0.02em' },
-  metaRow: { display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px' },
-  badge: { fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#FEF3C7', color: '#B45309', padding: '2px 8px', borderRadius: '6px' },
-  metaText: { fontSize: '0.9rem', color: '#64748B' },
-  headerActions: { display: 'flex', gap: '12px' },
-  headerBtn: { display: 'flex', alignItems: 'center', padding: '0.6rem 1.2rem', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', transition: '0.2s' },
-  
-  main: { maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' },
-  
-  statsRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' },
-  statCard: { backgroundColor: '#fff', padding: '1rem', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  statLabel: { fontSize: '0.75rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase' },
-  statValue: { fontSize: '1.5rem', fontWeight: 800, marginTop: '0.1rem', color: '#0F172A', lineHeight: 1 },
-  
-  controlsBar: { display: 'flex', justifyContent: 'center', marginBottom: '2rem' },
-  tabContainer: { display: 'inline-flex', backgroundColor: '#fff', padding: '6px', borderRadius: '14px', boxShadow: '0 2px 4px rgba(0,0,0,0.04)', border: '1px solid #E2E8F0', gap: '6px' },
-  tab: { padding: '0.6rem 1.5rem', border: 'none', borderRadius: '10px', cursor: 'pointer', fontSize: '0.95rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' },
-  tabCount: { padding: '2px 8px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 800 },
-  
-  // *** CHANGED: Reduced minmax width here for smaller cards ***
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem', alignItems: 'stretch' },
-  skeletonCard: { height: '300px', borderRadius: '16px' },
-  emptyState: { gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', background: 'white', borderRadius: '16px', border: '2px dashed #e2e8f0' },
-  emptyIconWrapper: { width: '60px', height: '60px', background: '#f1f5f9', borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' },
-  emptyTitle: { margin: 0, color: '#64748B' },
-
-  toast: { position: 'fixed', bottom: '30px', right: '30px', backgroundColor: '#1E1E1E', color: 'white', padding: '1rem 1.25rem', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)', zIndex: 100, minWidth: '300px' },
-  toastIcon: { display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.1)', width: '40px', height: '40px', borderRadius: '10px' }
-};
 
 export default Dashboard;

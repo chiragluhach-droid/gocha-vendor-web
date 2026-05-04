@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import LandingPage from './components/LandingPage';
 import { authAPI } from './api';
 
 function App() {
@@ -47,18 +48,20 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/" /> : <Login onLogin={handleLogin} />
+              isAuthenticated ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />
             }
           />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
             }
           />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </Router>

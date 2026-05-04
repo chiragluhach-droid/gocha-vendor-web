@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { authAPI } from '../api';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Lock, ChevronRight } from 'lucide-react';
 
 const Login = ({ onLogin }) => {
   const [restaurantId, setRestaurantId] = useState('69dbb73cf01a247deae8c231');
@@ -7,6 +9,7 @@ const Login = ({ onLogin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -30,160 +33,115 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const inputStyle = {
-    width: '100%',
-    padding: '14px',
-    border: '1.5px solid #d1d5db',
-    borderRadius: '10px',
-    fontSize: '0.95rem',
-    outline: 'none',
-    boxSizing: 'border-box',
-    transition: 'all 0.2s ease'
-  };
-
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      background: 'linear-gradient(135deg, #064e3b, #065f46, #047857)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
+    <div className="min-h-screen relative flex justify-center items-center font-sans bg-gray-900 py-6">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0 opacity-40 bg-cover bg-center"
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=2000&q=80")' }}
+      ></div>
+      
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent"></div>
 
-      <div style={{
-        width: '100%',
-        maxWidth: '430px',
-        padding: '2.5rem',
-        borderRadius: '18px',
-        background: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(12px)',
-        boxShadow: '0 25px 40px rgba(0,0,0,0.2)',
-        animation: 'fadeIn 0.4s ease'
-      }}>
-
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h2 style={{
-            fontSize: '1.9rem',
-            fontWeight: '700',
-            marginBottom: '0.4rem',
-            color: '#065f46'
-          }}>
-            Vendor Portal
-          </h2>
-          <p style={{ color: '#6b7280', fontSize: '0.95rem' }}>
-            Sign in to manage your restaurant
-          </p>
-        </div>
-
-        {/* Demo Credentials */}
-        <div style={{
-          backgroundColor: '#ecfdf5',
-          border: '1px solid #a7f3d0',
-          padding: '0.9rem',
-          borderRadius: '10px',
-          marginBottom: '1.5rem',
-          fontSize: '0.85rem',
-          color: '#065f46'
-        }}>
-          <strong>Demo Credentials</strong>
-          <div>ID: 69dbb73cf01a247deae8c231</div>
-          <div>Password: chirag123</div>
-        </div>
-
-        <form onSubmit={handleLogin}>
-
-          {/* Restaurant ID */}
-          <div style={{ marginBottom: '1.3rem' }}>
-            <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>
-              Restaurant ID
-            </label>
-            <input
-              type="text"
-              value={restaurantId}
-              onChange={(e) => setRestaurantId(e.target.value)}
-              required
-              style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = '#047857'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-            />
-          </div>
-
-          {/* Password */}
-          <div style={{ marginBottom: '1.3rem', position: 'relative' }}>
-            <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>
-              Passkey
-            </label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={passkey}
-              onChange={(e) => setPasskey(e.target.value)}
-              required
-              style={inputStyle}
-              onFocus={(e) => e.target.style.borderColor = '#047857'}
-              onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
-            />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: '12px',
-                top: '38px',
-                cursor: 'pointer',
-                fontSize: '0.8rem',
-                color: '#047857',
-                fontWeight: '600'
-              }}
-            >
-              {showPassword ? 'Hide' : 'Show'}
-            </span>
-          </div>
-
-          {/* Error */}
-          {error && (
-            <div style={{
-              backgroundColor: '#fee2e2',
-              color: '#991b1b',
-              padding: '0.75rem',
-              borderRadius: '8px',
-              fontSize: '0.85rem',
-              marginBottom: '1rem'
-            }}>
-              {error}
-            </div>
-          )}
-
-          {/* Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.9rem',
-              background: 'linear-gradient(135deg,#065f46,#047857)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: '1rem',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: '0.2s',
-              transform: loading ? 'scale(0.98)' : 'scale(1)'
-            }}
+      <div className="w-full max-w-[400px] relative z-10 px-4">
+        
+        {/* Back to Home Link */}
+        <div className="mb-4 flex justify-center">
+          <div 
+            onClick={() => navigate('/')}
+            className="cursor-pointer bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full inline-flex items-center gap-2 text-xs font-medium transition-colors"
           >
-            {loading ? 'Signing In...' : 'Sign In'}
-          </button>
-        </form>
+            ← Back to Home
+          </div>
+        </div>
 
-        <p style={{
-          textAlign: 'center',
-          marginTop: '1.5rem',
-          fontSize: '0.8rem',
-          color: '#9ca3af'
-        }}>
-          🔒 Secure Vendor Access
-        </p>
+        <div className="bg-white/95 backdrop-blur-xl shadow-2xl rounded-2xl p-6 sm:p-8 border border-white/20">
+          
+          {/* Logo & Header */}
+          <div className="text-center mb-5">
+            <div className="w-12 h-12 mx-auto bg-brand-50 rounded-xl border border-brand-100 flex items-center justify-center mb-3 overflow-hidden shadow-sm">
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Vendor Portal</h2>
+            <p className="text-[12px] text-brand-600 font-semibold tracking-[0.1em] uppercase mt-1 opacity-80">
+              Empowering Campus Flavors
+            </p>
+          </div>
+
+
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            
+            {/* Restaurant ID */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Restaurant ID</label>
+              <input
+                type="text"
+                value={restaurantId}
+                onChange={(e) => setRestaurantId(e.target.value)}
+                required
+                className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all text-gray-800 text-sm font-medium"
+                placeholder="Enter your ID"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">Passkey</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={passkey}
+                  onChange={(e) => setPasskey(e.target.value)}
+                  required
+                  className="w-full px-3 py-2.5 pr-10 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all text-gray-800 text-sm font-medium"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-brand-600 transition-colors rounded-md"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Error */}
+            {error && (
+              <div className="bg-red-50 text-red-600 p-2.5 rounded-lg text-xs font-medium border border-red-100 flex items-center gap-2">
+                <span className="w-1 h-3 bg-red-500 rounded-full"></span>
+                {error}
+              </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 px-4 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-bold shadow-md shadow-brand-500/20 transition-all flex items-center justify-center gap-2 mt-1 group ${loading ? 'opacity-70 cursor-not-allowed scale-[0.98]' : 'hover:-translate-y-0.5'}`}
+            >
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Signing In...
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+                </>
+              )}
+            </button>
+
+          </form>
+
+          <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-center gap-1.5 text-xs text-gray-400 font-medium">
+            <Lock size={12} className="text-brand-500" />
+            Secure Vendor Access
+          </div>
+        </div>
       </div>
     </div>
   );
