@@ -14,6 +14,7 @@ import {
   Star,
   MapPin,
   Home,
+  User,
   ShoppingBag,
   ShoppingCart
 } from 'lucide-react';
