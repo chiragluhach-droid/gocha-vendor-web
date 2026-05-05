@@ -14,7 +14,6 @@ import {
   Star,
   MapPin,
   Home,
-  User,
   ShoppingBag,
   ShoppingCart
 } from 'lucide-react';
@@ -23,7 +22,7 @@ import { motion } from 'framer-motion';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
+
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
