@@ -46,9 +46,9 @@ const Navbar = () => {
             <a href="#features" className="text-gray-600 hover:text-brand-600 transition-colors">Features</a>
             <a href="#how-it-works" className="text-gray-600 hover:text-brand-600 transition-colors">How it Works</a>
             <a href="#vendors" className="text-gray-600 hover:text-brand-600 transition-colors">For Vendors</a>
-            <button onClick={() => navigate('/login')} className="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-full transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-medium">
-              Vendor Login
-            </button>
+            <a href="mailto:chiragluhach.dev@gmail.com" className="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-full transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 font-semibold text-sm">
+              Contact Us
+            </a>
           </div>
 
           <button 
@@ -70,9 +70,9 @@ const Navbar = () => {
           <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium py-2">Features</a>
           <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium py-2">How it Works</a>
           <a href="#vendors" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 font-medium py-2">For Vendors</a>
-          <button onClick={() => { navigate('/login'); setMobileMenuOpen(false); }} className="bg-brand-600 text-white px-5 py-3 rounded-xl font-medium mt-2">
-            Vendor Login
-          </button>
+          <a href="mailto:chiragluhach.dev@gmail.com" className="bg-brand-600 text-white px-5 py-3 rounded-xl font-bold mt-2 text-center shadow-lg">
+            Contact Us
+          </a>
         </motion.div>
       )}
     </nav>
@@ -496,7 +496,7 @@ const Footer = () => {
           <div className="flex gap-6">
             <a href="#features" className="text-gray-500 hover:text-brand-600 font-medium">Features</a>
             <a href="#vendors" className="text-gray-500 hover:text-brand-600 font-medium">For Vendors</a>
-            <a href="mailto:hello@mr-bites.com" className="text-gray-500 hover:text-brand-600 font-medium">Contact</a>
+            <a href="mailto:chiragluhach.dev@gmail.com" className="text-gray-500 hover:text-brand-600 font-medium">Contact</a>
           </div>
         </div>
         
